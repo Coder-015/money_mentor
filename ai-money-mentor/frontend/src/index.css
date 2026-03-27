@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-primary text-text;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-accent hover:bg-accent/90 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-secondary {
+    @apply bg-card hover:bg-card/80 border border-muted text-text font-semibold py-2 px-4 rounded-lg transition-all duration-200;
+  }
+  
+  .card {
+    @apply bg-card rounded-xl p-6 border border-muted/20;
+  }
+  
+  .input-field {
+    @apply bg-primary border border-muted/30 rounded-lg px-4 py-2 text-text placeholder-muted focus:outline-none focus:border-accent/50 transition-all duration-200;
+  }
+  
+  .slider {
+    @apply w-full h-2 bg-muted/30 rounded-lg appearance-none cursor-pointer;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    @apply appearance-none w-4 h-4 bg-accent rounded-full cursor-pointer;
+  }
+  
+  .slider::-moz-range-thumb {
+    @apply w-4 h-4 bg-accent rounded-full cursor-pointer border-0;
+  }
+}
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+.typing-dot {
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
