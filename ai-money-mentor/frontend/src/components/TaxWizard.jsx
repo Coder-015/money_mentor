@@ -71,7 +71,7 @@ const TaxWizard = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-6xl mx-auto">
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-2">Tax Wizard</h2>
         <p className="text-muted">Compare old vs new tax regime and find your optimal choice</p>
@@ -85,7 +85,7 @@ const TaxWizard = () => {
             <span>Your Income Details</span>
           </h3>
 
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium mb-2">Annual CTC</label>
               <input
@@ -153,60 +153,62 @@ const TaxWizard = () => {
             </div>
           </div>
 
-          <h3 className="font-semibold flex items-center space-x-2">
-            <Calculator className="w-5 h-5 text-accent" />
-            <span>Deductions</span>
-          </h3>
+          <div className="lg:col-span-2">
+            <h3 className="font-semibold flex items-center space-x-2">
+              <Calculator className="w-5 h-5 text-accent" />
+              <span>Deductions</span>
+            </h3>
 
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                80C Investments (Max ₹1,50,000)
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="150000"
-                value={formData.investments_80c}
-                onChange={(e) => handleInputChange('investments_80c', Math.min(150000, parseInt(e.target.value) || 0))}
-                className="input-field w-full"
-              />
-              <div className="text-xs text-muted mt-1">
-                Includes ELSS, PPF, EPF, LIC, NSC, etc.
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  80C Investments (Max ₹1,50,000)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  max="150000"
+                  value={formData.investments_80c}
+                  onChange={(e) => handleInputChange('investments_80c', Math.min(150000, parseInt(e.target.value) || 0))}
+                  className="input-field w-full"
+                />
+                <div className="text-xs text-muted mt-1">
+                  Includes ELSS, PPF, EPF, LIC, NSC, etc.
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Health Insurance Premium (80D)
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="25000"
-                value={formData.health_insurance}
-                onChange={(e) => handleInputChange('health_insurance', Math.min(25000, parseInt(e.target.value) || 0))}
-                className="input-field w-full"
-              />
-              <div className="text-xs text-muted mt-1">
-                Max ₹25,000 for self (₹50,000 for senior citizens)
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Health Insurance Premium (80D)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  max="25000"
+                  value={formData.health_insurance}
+                  onChange={(e) => handleInputChange('health_insurance', Math.min(25000, parseInt(e.target.value) || 0))}
+                  className="input-field w-full"
+                />
+                <div className="text-xs text-muted mt-1">
+                  Max ₹25,000 for self (₹50,000 for senior citizens)
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                NPS Contribution (80CCD1B)
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="50000"
-                value={formData.nps_contribution}
-                onChange={(e) => handleInputChange('nps_contribution', Math.min(50000, parseInt(e.target.value) || 0))}
-                className="input-field w-full"
-              />
-              <div className="text-xs text-muted mt-1">
-                Additional ₹50,000 over 80C limit
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  NPS Contribution (80CCD1B)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  max="50000"
+                  value={formData.nps_contribution}
+                  onChange={(e) => handleInputChange('nps_contribution', Math.min(50000, parseInt(e.target.value) || 0))}
+                  className="input-field w-full"
+                />
+                <div className="text-xs text-muted mt-1">
+                  Additional ₹50,000 over 80C limit
+                </div>
               </div>
             </div>
           </div>
@@ -214,7 +216,7 @@ const TaxWizard = () => {
           <button
             onClick={calculateTax}
             disabled={isLoading}
-            className="btn-primary w-full"
+            className="btn-primary w-full lg:col-span-2 mt-6"
           >
             {isLoading ? 'Calculating...' : 'Compare Tax Regimes'}
           </button>
@@ -222,9 +224,9 @@ const TaxWizard = () => {
 
         {/* Results */}
         {results && (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fade-in" style={{ animationDelay: '200ms' }}>
             {/* Winner Banner */}
-            <div className={`card p-4 border-l-4 ${
+            <div className={`card p-4 border-l-4 animate-pulse ${
               results.recommended === 'old' 
                 ? 'border-green-500 bg-green-500/10' 
                 : 'border-blue-500 bg-blue-500/10'
@@ -247,12 +249,12 @@ const TaxWizard = () => {
             </div>
 
             {/* Comparison Cards */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className={`card p-4 border-2 ${
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className={`card p-4 border-2 animate-fade-in ${
                 results.recommended === 'old' 
                   ? 'border-green-500' 
                   : 'border-muted/30'
-              }`}>
+              }`} style={{ animationDelay: '300ms' }}>
                 <h4 className="font-semibold mb-3 text-green-500">Old Regime</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
@@ -274,11 +276,11 @@ const TaxWizard = () => {
                 </div>
               </div>
 
-              <div className={`card p-4 border-2 ${
+              <div className={`card p-4 border-2 animate-fade-in ${
                 results.recommended === 'new' 
                   ? 'border-blue-500' 
                   : 'border-muted/30'
-              }`}>
+              }`} style={{ animationDelay: '400ms' }}>
                 <h4 className="font-semibold mb-3 text-blue-500">New Regime</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
@@ -302,20 +304,14 @@ const TaxWizard = () => {
             </div>
 
             {/* Chart */}
-            <div className="card">
+            <div className="card animate-fade-in" style={{ animationDelay: '600ms' }}>
               <h3 className="font-semibold mb-4">Visual Comparison</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                  <XAxis dataKey="name" stroke="#9ca3af" />
-                  <YAxis 
-                    stroke="#9ca3af"
-                    tickFormatter={(value) => {
-                      if (value >= 100000) return `${(value / 100000).toFixed(0)}L`;
-                      return value;
-                    }}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
+                  <XAxis dataKey="name" stroke="#9ca3af" angle={-45} textAnchor="end" height={80} fontSize={12} />
+                  <YAxis stroke="#9ca3af" domain={[0, null]} />
+                  <Tooltip contentStyle={{ backgroundColor: '#1a1a2e', border: '1px solid #374151' }} labelStyle={{ color: '#fffffe' }} />
                   <Legend />
                   <Bar dataKey="Tax" fill="#e94560" radius={[8, 8, 0, 0]} />
                   <Bar dataKey="Taxable Income" fill="#6366f1" radius={[8, 8, 0, 0]} />
@@ -324,7 +320,7 @@ const TaxWizard = () => {
             </div>
 
             {/* AI Explanation */}
-            <div className="card">
+            <div className="card animate-fade-in" style={{ animationDelay: '800ms' }}>
               <div className="flex items-center space-x-2 mb-3">
                 <Info className="w-4 h-4 text-accent" />
                 <h3 className="font-semibold">AI Explanation</h3>

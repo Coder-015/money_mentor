@@ -94,7 +94,7 @@ const FireCalculator = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-6xl mx-auto">
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-2">FIRE Calculator</h2>
         <p className="text-muted">Calculate your Financial Independence, Retire Early number</p>
@@ -103,125 +103,138 @@ const FireCalculator = () => {
       <div className="grid md:grid-cols-2 gap-6">
         {/* Input Form */}
         <div className="card space-y-6">
-          <h3 className="font-semibold flex items-center space-x-2">
+          <h3 className="font-semibold flex items-center space-x-2 mb-6">
             <Calculator className="w-5 h-5 text-accent" />
             <span>Your Details</span>
           </h3>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Current Age: {formData.age} years
-            </label>
-            <input
-              type="range"
-              min="20"
-              max="60"
-              value={formData.age}
-              onChange={(e) => handleInputChange('age', parseInt(e.target.value))}
-              className="slider"
-            />
-            <input
-              type="number"
-              min="20"
-              max="60"
-              value={formData.age}
-              onChange={(e) => handleInputChange('age', parseInt(e.target.value))}
-              className="input-field mt-2 w-full"
-            />
-          </div>
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <label className="block text-sm font-medium mb-2">
+                Current Age: {formData.age} years
+              </label>
+              <div className="flex items-center space-x-3">
+                <input
+                  type="range"
+                  min="20"
+                  max="60"
+                  value={formData.age}
+                  onChange={(e) => handleInputChange('age', parseInt(e.target.value))}
+                  className="flex-1 slider"
+                />
+                <input
+                  type="number"
+                  min="20"
+                  max="60"
+                  value={formData.age}
+                  onChange={(e) => handleInputChange('age', parseInt(e.target.value))}
+                  className="input-field w-24 text-center"
+                />
+              </div>
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Monthly Expenses: {formatCurrency(formData.monthly_expenses)}
-            </label>
-            <input
-              type="range"
-              min="10000"
-              max="500000"
-              step="5000"
-              value={formData.monthly_expenses}
-              onChange={(e) => handleInputChange('monthly_expenses', parseInt(e.target.value))}
-              className="slider"
-            />
-            <input
-              type="number"
-              min="10000"
-              max="500000"
-              step="5000"
-              value={formData.monthly_expenses}
-              onChange={(e) => handleInputChange('monthly_expenses', parseInt(e.target.value))}
-              className="input-field mt-2 w-full"
-            />
-          </div>
+            <div className="space-y-4">
+              <label className="block text-sm font-medium mb-2">
+                Monthly Expenses: {formatCurrency(formData.monthly_expenses)}
+              </label>
+              <div className="flex items-center space-x-3">
+                <input
+                  type="range"
+                  min="10000"
+                  max="500000"
+                  step="5000"
+                  value={formData.monthly_expenses}
+                  onChange={(e) => handleInputChange('monthly_expenses', parseInt(e.target.value))}
+                  className="flex-1 slider"
+                />
+                <input
+                  type="number"
+                  min="10000"
+                  max="500000"
+                  step="5000"
+                  value={formData.monthly_expenses}
+                  onChange={(e) => handleInputChange('monthly_expenses', parseInt(e.target.value))}
+                  className="input-field w-32 text-center"
+                />
+              </div>
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Current Savings: {formatCurrency(formData.current_savings)}
-            </label>
-            <input
-              type="range"
-              min="0"
-              max="10000000"
-              step="50000"
-              value={formData.current_savings}
-              onChange={(e) => handleInputChange('current_savings', parseInt(e.target.value))}
-              className="slider"
-            />
-            <input
-              type="number"
-              min="0"
-              max="10000000"
-              step="50000"
-              value={formData.current_savings}
-              onChange={(e) => handleInputChange('current_savings', parseInt(e.target.value))}
-              className="input-field mt-2 w-full"
-            />
-          </div>
+            <div className="space-y-4">
+              <label className="block text-sm font-medium mb-2">
+                Current Savings: {formatCurrency(formData.current_savings)}
+              </label>
+              <div className="flex items-center space-x-3">
+                <input
+                  type="range"
+                  min="0"
+                  max="10000000"
+                  step="50000"
+                  value={formData.current_savings}
+                  onChange={(e) => handleInputChange('current_savings', parseInt(e.target.value))}
+                  className="flex-1 slider"
+                />
+                <input
+                  type="number"
+                  min="0"
+                  max="10000000"
+                  step="50000"
+                  value={formData.current_savings}
+                  onChange={(e) => handleInputChange('current_savings', parseInt(e.target.value))}
+                  className="input-field w-32 text-center"
+                />
+              </div>
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Monthly SIP: {formatCurrency(formData.monthly_sip)}
-            </label>
-            <input
-              type="range"
-              min="1000"
-              max="200000"
-              step="1000"
-              value={formData.monthly_sip}
-              onChange={(e) => handleInputChange('monthly_sip', parseInt(e.target.value))}
-              className="slider"
-            />
-            <input
-              type="number"
-              min="1000"
-              max="200000"
-              step="1000"
-              value={formData.monthly_sip}
-              onChange={(e) => handleInputChange('monthly_sip', parseInt(e.target.value))}
-              className="input-field mt-2 w-full"
-            />
-          </div>
+            <div className="space-y-4">
+              <label className="block text-sm font-medium mb-2">
+                Monthly SIP: {formatCurrency(formData.monthly_sip)}
+              </label>
+              <div className="flex items-center space-x-3">
+                <input
+                  type="range"
+                  min="1000"
+                  max="200000"
+                  step="1000"
+                  value={formData.monthly_sip}
+                  onChange={(e) => handleInputChange('monthly_sip', parseInt(e.target.value))}
+                  className="flex-1 slider"
+                />
+                <input
+                  type="number"
+                  min="1000"
+                  max="200000"
+                  step="1000"
+                  value={formData.monthly_sip}
+                  onChange={(e) => handleInputChange('monthly_sip', parseInt(e.target.value))}
+                  className="input-field w-32 text-center"
+                />
+              </div>
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Expected Annual Return: {formData.expected_return}%
-            </label>
-            <input
-              type="range"
-              min="6"
-              max="18"
-              value={formData.expected_return}
-              onChange={(e) => handleInputChange('expected_return', parseInt(e.target.value))}
-              className="slider"
-            />
-            <input
-              type="number"
-              min="6"
-              max="18"
-              value={formData.expected_return}
-              onChange={(e) => handleInputChange('expected_return', parseInt(e.target.value))}
-              className="input-field mt-2 w-full"
-            />
+            <div className="space-y-4">
+              <label className="block text-sm font-medium mb-2">
+                Expected Annual Return: {formData.expected_return}%
+              </label>
+              <div className="flex items-center space-x-3">
+                <input
+                  type="range"
+                  min="6"
+                  max="18"
+                  value={formData.expected_return}
+                  onChange={(e) => handleInputChange('expected_return', parseInt(e.target.value))}
+                  className="flex-1 slider"
+                />
+                <input
+                  type="number"
+                  min="6"
+                  max="18"
+                  value={formData.expected_return}
+                  onChange={(e) => handleInputChange('expected_return', parseInt(e.target.value))}
+                  className="input-field w-16 text-center"
+                />
+                <span className="text-sm text-muted">%</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -229,34 +242,36 @@ const FireCalculator = () => {
         <div className="space-y-6">
           {results && (
             <>
-              <div className="card">
+              <div className="card overflow-hidden">
                 <h3 className="font-semibold flex items-center space-x-2 mb-4">
                   <Target className="w-5 h-5 text-accent" />
                   <span>Your FIRE Number</span>
                 </h3>
-                <div className="text-3xl font-bold text-accent mb-2">
-                  {formatCurrency(results.fire_number)}
+                <div className="text-center py-4">
+                  <div className="text-4xl font-bold text-accent animate-pulse">
+                    {formatCurrency(results.fire_number)}
+                  </div>
+                  <p className="text-sm text-muted">Amount needed to retire comfortably</p>
                 </div>
-                <p className="text-sm text-muted">Amount needed to retire comfortably</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="card">
+                <div className="card overflow-hidden">
                   <div className="flex items-center space-x-2 mb-2">
                     <Calendar className="w-4 h-4 text-accent" />
                     <span className="text-sm font-medium">Years to FIRE</span>
                   </div>
-                  <div className="text-2xl font-bold">
+                  <div className="text-3xl font-bold">
                     {results.years_to_fire === 50 ? '50+' : results.years_to_fire.toFixed(1)}
                   </div>
                 </div>
 
-                <div className="card">
+                <div className="card overflow-hidden">
                   <div className="flex items-center space-x-2 mb-2">
                     <TrendingUp className="w-4 h-4 text-accent" />
                     <span className="text-sm font-medium">Retirement Age</span>
                   </div>
-                  <div className="text-2xl font-bold">
+                  <div className="text-3xl font-bold">
                     {results.retirement_age === 80 ? '80+' : results.retirement_age.toFixed(0)}
                   </div>
                 </div>
@@ -265,7 +280,7 @@ const FireCalculator = () => {
               <button
                 onClick={getActionPlan}
                 disabled={isLoading}
-                className="btn-primary w-full flex items-center justify-center space-x-2"
+                className="btn-primary w-full flex items-center justify-center space-x-2 transition-transform hover:scale-105"
               >
                 <Lightbulb className="w-4 h-4" />
                 <span>{isLoading ? 'Generating...' : 'Get AI Action Plan'}</span>
@@ -277,7 +292,7 @@ const FireCalculator = () => {
 
       {/* Chart */}
       {chartData.length > 1 && (
-        <div className="card">
+        <div className="card overflow-hidden">
           <h3 className="font-semibold mb-4">Corpus Growth Over Time</h3>
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={chartData}>
@@ -302,6 +317,7 @@ const FireCalculator = () => {
                 stroke="#e94560" 
                 fill="#e94560" 
                 fillOpacity={0.3}
+                animationDuration={800}
               />
             </AreaChart>
           </ResponsiveContainer>

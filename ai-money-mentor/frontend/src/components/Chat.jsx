@@ -3,17 +3,23 @@ import axios from 'axios';
 import { Send, Bot, User } from 'lucide-react';
 
 const Chat = () => {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    { 
+      role: "assistant", 
+      content: "Namaste! I'm Artha, your personal AI finance advisor. What's your name? And what's one money thing stressing you out most right now?" 
+    }
+  ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
   const suggestions = [
-    "Old vs new tax regime?",
-    "How much SIP to retire at 45?",
-    "What's my FIRE number?",
-    "Check my money health",
-    "Best tax saving investments"
+    "What is SIP?",
+    "Old vs new tax regime",
+    "How much term insurance?",
+    "Rate my money health",
+    "FIRE number for me",
+    "Best tax saving options"
   ];
 
   const scrollToBottom = () => {
@@ -24,42 +30,26 @@ const Chat = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSend = async (messageText) => {
-    if (!messageText.trim()) return;
-
-    const userMessage = {
-      id: Date.now(),
-      text: messageText,
-      sender: 'user',
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
+  const sendMessage = async (text) => {
+    if (!text.trim()) return;
+    
+    const userMsg = { role: "user", content: text };
+    const updatedHistory = [...messages, userMsg];
+    setMessages(updatedHistory);
     setInput('');
     setIsLoading(true);
 
     try {
-      const response = await axios.post('/api/ask', {
-        question: messageText,
-        user_context: 'Indian user seeking financial advice'
+      const res = await axios.post('/api/ask', {
+        message: text,
+        history: messages  // send full conversation history
       });
 
-      const aiMessage = {
-        id: Date.now() + 1,
-        text: response.data.answer,
-        sender: 'ai',
-        timestamp: new Date()
-      };
-
-      setMessages(prev => [...prev, aiMessage]);
-    } catch (error) {
-      const errorMessage = {
-        id: Date.now() + 1,
-        text: 'Sorry, I encountered an error. Please try again.',
-        sender: 'ai',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      const aiMsg = { role: "assistant", content: res.data.answer };
+      setMessages(prev => [...prev, aiMsg]);
+    } catch (err) {
+      const errMsg = { role: "assistant", content: "Sorry yaar, something went wrong. Try again in a second." };
+      setMessages(prev => [...prev, errMsg]);
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +57,7 @@ const Chat = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleSend(input);
+    sendMessage(input);
   };
 
   const formatTime = (date) => {
@@ -77,10 +67,17 @@ const Chat = () => {
     });
   };
 
+  const getMessageTime = () => {
+    return new Date().toLocaleTimeString('en-IN', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  };
+
   return (
-    <div className="flex flex-col h-[calc(100vh-12rem)]">
+    <div className="flex flex-col h-[calc(100vh-12rem)] max-w-4xl mx-auto">
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
         {messages.length === 0 && (
           <div className="text-center text-muted mt-8">
             <Bot className="w-12 h-12 mx-auto mb-4 text-muted/50" />
@@ -89,37 +86,40 @@ const Chat = () => {
           </div>
         )}
 
-        {messages.map((message) => (
+        {messages.map((message, index) => (
           <div
-            key={message.id}
-            className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+            key={index}
+            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} message-bubble`}
           >
             <div
-              className={`max-w-[80%] md:max-w-[60%] flex items-start space-x-2 ${
-                message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''
+              className={`max-w-[65%] flex items-start space-x-2 ${
+                message.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''
               }`}
             >
               <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                message.sender === 'user' ? 'bg-accent' : 'bg-muted/30'
+                message.role === 'user' ? 'bg-accent' : 'bg-muted/30'
               }`}>
-                {message.sender === 'user' ? (
+                {message.role === 'user' ? (
                   <User className="w-4 h-4 text-white" />
                 ) : (
                   <Bot className="w-4 h-4 text-muted" />
                 )}
               </div>
               <div>
+                {message.role === 'assistant' && index === 0 && (
+                  <p className="text-xs text-accent font-medium mb-1" style={{ fontSize: '12px', color: '#e94560', fontWeight: 500 }}>Artha</p>
+                )}
                 <div
                   className={`rounded-2xl px-4 py-2 ${
-                    message.sender === 'user'
+                    message.role === 'user'
                       ? 'bg-accent text-white rounded-br-sm'
-                      : 'bg-card text-text rounded-bl-sm border border-muted/20'
+                      : 'bg-card text-text rounded-bl-sm border-l-[3px] border-l-accent border border-muted/20'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.text}</p>
+                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                 </div>
-                <p className="text-xs text-muted mt-1 px-1">
-                  {formatTime(message.timestamp)}
+                <p className="text-xs text-muted mt-1 px-1" style={{ fontSize: '11px' }}>
+                  {getMessageTime()}
                 </p>
               </div>
             </div>
@@ -146,14 +146,15 @@ const Chat = () => {
       </div>
 
       {/* Quick Suggestions */}
-      {messages.length === 0 && (
-        <div className="px-4 py-3 border-t border-muted/20">
-          <div className="flex flex-wrap gap-2">
+      {messages.length === 1 && (
+        <div className="px-5 py-3 border-t border-muted/20">
+          <div className="flex gap-2 overflow-x-auto chips-row pb-0">
             {suggestions.map((suggestion, index) => (
               <button
                 key={index}
-                onClick={() => handleSend(suggestion)}
-                className="text-xs bg-card border border-muted/30 px-3 py-1.5 rounded-full text-muted hover:text-text hover:border-accent/50 transition-all duration-200"
+                onClick={() => sendMessage(suggestion)}
+                className="text-xs bg-transparent border border-[rgba(255,255,255,0.15)] px-4 py-2 rounded-full text-muted hover:text-accent hover:border-accent transition-all duration-200 whitespace-nowrap"
+                style={{ fontSize: '13px', padding: '8px 16px' }}
               >
                 {suggestion}
               </button>
@@ -163,20 +164,28 @@ const Chat = () => {
       )}
 
       {/* Input Form */}
-      <form onSubmit={handleSubmit} className="px-4 py-3 border-t border-muted/20">
-        <div className="flex space-x-2">
+      <form onSubmit={handleSubmit} className="px-5 py-4 border-t border-muted/20">
+        <div className="flex space-x-3">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about your finances..."
-            className="flex-1 input-field"
+            className="flex-1 input-field rounded-[24px]"
+            style={{ borderRadius: '24px' }}
             disabled={isLoading}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage(input);
+              }
+            }}
           />
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="btn-primary px-4"
+            className="btn-primary rounded-full w-11 h-11 flex items-center justify-center transition-transform hover:scale-105"
+            style={{ width: '44px', height: '44px', borderRadius: '50%' }}
           >
             <Send className="w-4 h-4" />
           </button>

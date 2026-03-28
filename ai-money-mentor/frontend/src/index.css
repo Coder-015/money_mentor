@@ -15,7 +15,7 @@
   }
   
   .btn-secondary {
-    @apply bg-card hover:bg-card/80 border border-muted text-text font-semibold py-2 px-4 rounded-lg transition-all duration-200;
+    @apply bg-card hover:bg-card/80 border border-muted/30 text-text font-semibold py-2 px-4 rounded-lg transition-all duration-200;
   }
   
   .card {
@@ -36,6 +36,113 @@
   
   .slider::-moz-range-thumb {
     @apply w-4 h-4 bg-accent rounded-full cursor-pointer border-0;
+  }
+}
+
+@layer utilities {
+  .page-enter {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  
+  .page-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+  
+  .message {
+    animation: messageIn 0.2s ease forwards;
+  }
+  
+  @keyframes messageIn {
+    from { 
+      opacity: 0; 
+      transform: translateY(10px); 
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+  }
+  
+  .nav-icon {
+    transition: transform 0.2s ease;
+  }
+  
+  .nav-icon:hover {
+    transform: scale(1.1);
+  }
+  
+  .online-dot {
+    animation: pulse 2s ease infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { 
+      opacity: 1; 
+    }
+    50% { 
+      opacity: 0.4; 
+    }
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease forwards;
+  }
+  
+  @keyframes fadeIn {
+    from { 
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-pulse {
+    animation: pulse 2s ease infinite;
+  }
+  
+  /* Hide scrollbar but keep scroll */
+  .chips-row::-webkit-scrollbar { display: none; }
+  .chips-row { scrollbar-width: none; -ms-overflow-style: none; }
+
+  /* Page fade in */
+  .page-content {
+    animation: fadeUp 0.2s ease forwards;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Message slide in */
+  @keyframes messageIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .message-bubble {
+    animation: messageIn 0.18s ease forwards;
+  }
+
+  /* Pulse for online dot */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .online-dot {
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  /* Nav icon hover */
+  .nav-item svg {
+    transition: transform 0.2s ease;
+  }
+  .nav-item:hover svg {
+    transform: scale(1.1);
   }
 }
 

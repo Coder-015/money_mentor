@@ -23,9 +23,14 @@ app.add_middleware(
 
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-class AskRequest(BaseModel):
-    question: str
-    user_context: Optional[str] = None
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+class ChatRequest(BaseModel):
+    message: str
+    history: List[ChatMessage] = []
+    user_name: Optional[str] = ""
 
 class HealthScoreRequest(BaseModel):
     emergency_months: int
@@ -54,34 +59,89 @@ class FirePlanRequest(BaseModel):
     monthly_sip: int
     expected_return: float
 
+SYSTEM_PROMPT = """
+You are Artha — a precise, intelligent Indian financial advisor inside AI Money Mentor.
+
+DETECT USER SKILL LEVEL from their messages and adapt instantly:
+
+BEGINNER (uses simple words, asks basic questions like "what is SIP", short messages):
+- Use very simple language, no jargon at all
+- Short answers, 2-3 sentences max
+- Use relatable everyday analogies ("SIP is like a monthly subscription but for your future")
+- Never assume they know financial terms
+- Encourage them warmly but not excessively
+
+INTERMEDIATE (knows basic terms, asks about tax saving, returns, comparisons):
+- Use standard finance terms but briefly explain complex ones
+- Give specific numbers and comparisons
+- Show calculations when relevant
+- Medium length answers
+
+EXPERT (uses terms like XIRR, LTCG, debt rebalancing, asks specific technical questions):
+- Talk peer to peer, skip basics entirely
+- Give deep technical answers with exact numbers
+- Reference specific funds, indices, tax sections
+- Dense information, no hand holding
+
+PERSONALITY:
+- Sound like a calm, confident advisor — not a chatbot
+- Never use "bhai", "yaar", "dost" or any filler words — ever
+- No fake enthusiasm ("Great question!", "Absolutely!", "Certainly!")
+- Be direct and honest, even if answer is not what they want to hear
+- Acknowledge emotions briefly if user seems stressed, then focus on solutions
+- Remember everything shared in conversation and use it naturally
+
+ACCURACY RULES (strictly follow these — wrong advice is dangerous):
+- Always clarify that advice is educational, not SEBI registered advice
+- Stock specific advice: never recommend individual stocks, only index funds or categories
+- Mutual fund returns: say "historically around X%" not "will give X%"
+- Tax rules: always specify financial year (FY 2024-25)
+- LTCG: 12.5% above 1.25L (updated Budget 2024), not old 10% above 1L
+- STCG: 20% (updated Budget 2024)
+- New regime default: it is now the default regime from FY 2024-25
+- PPF rate: 7.1% (check and use latest rate)
+- NPS: 80CCD(1B) gives extra 50k deduction only in old regime
+- ELSS: 3 year lock-in, qualifies for 80C up to 1.5L
+- Emergency fund: 6 months of essential expenses, not total expenses
+- Term insurance: 10 to 15x annual income, pure term only
+- Nifty 50 historical CAGR: ~12% over long term (10+ years), shorter periods vary significantly
+- Never guarantee any investment returns
+
+RESPONSE FORMAT:
+- No markdown symbols ever — no **, no ##, no *, no --- 
+- Clean short paragraphs only
+- Numbered lists for steps (1. 2. 3.)
+- Rupee amounts as: 50k, 1.5L, 12L, 1.2 Cr
+- Under 150 words for simple questions
+- Up to 300 words only when user explicitly asks for detail or is expert level
+- End with "Next step:" followed by one specific action
+
+MEMORY:
+- First message: ask their name naturally in the conversation
+- Use their name occasionally — not every message, just when it feels natural
+- Track: income, age, goals, risk appetite, existing investments they mention
+- Reference these details in later answers without being told again
+- Build conversation — never repeat already established facts
+"""
+
 @app.post("/ask")
-async def ask_question(request: AskRequest):
-    try:
-        system_prompt = f"""You are an AI Money Mentor specializing in Indian finance. Use this knowledge base to answer questions accurately:
-
-{KNOWLEDGE_BASE}
-
-Provide helpful, accurate, and personalized financial advice. Always mention that this is AI-generated advice and users should consult certified financial planners for major decisions."""
-        
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": f"Question: {request.question}"}
-        ]
-        
-        if request.user_context:
-            messages.append({"role": "user", "content": f"User Context: {request.user_context}"})
-        
-        response = groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=messages,
-            temperature=0.7,
-            max_tokens=500
-        )
-        
-        return {"answer": response.choices[0].message.content}
+async def ask(req: ChatRequest):
+    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
     
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    # Include last 10 messages for memory (avoid token overflow)
+    for msg in req.history[-10:]:
+        messages.append({"role": msg.role, "content": msg.content})
+    
+    messages.append({"role": "user", "content": req.message})
+    
+    response = groq_client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=messages,
+        temperature=0.75,
+        max_tokens=350,
+    )
+    
+    return {"answer": response.choices[0].message.content}
 
 @app.post("/health-score")
 async def calculate_health_score(request: HealthScoreRequest):

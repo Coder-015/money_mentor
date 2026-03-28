@@ -143,7 +143,7 @@ const MoneyHealthScore = () => {
 
     if (step.type === 'slider') {
       return (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-fade-in" style={{ animationDelay: `${currentStep * 100}ms` }}>
           <div className="text-center">
             <Icon className="w-12 h-12 mx-auto mb-4 text-accent" />
             <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
@@ -368,7 +368,7 @@ const MoneyHealthScore = () => {
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Personalized Tips</h3>
           {results.tips.map((tip, index) => (
-            <div key={index} className="card border-l-4 border-accent">
+            <div key={index} className="card border-l-4 border-accent animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
               <div className="flex items-start space-x-3">
                 <div className="flex-shrink-0 w-6 h-6 bg-accent/10 rounded-full flex items-center justify-center">
                   <span className="text-accent text-sm font-semibold">{index + 1}</span>
@@ -404,7 +404,7 @@ const MoneyHealthScore = () => {
     );
   };
 
-  if (results) {
+    if (results) {
     return (
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
@@ -417,7 +417,7 @@ const MoneyHealthScore = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-4xl mx-auto">
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold mb-2">Money Health Score</h2>
         <p className="text-muted">Assess your financial health in 5 simple steps</p>
